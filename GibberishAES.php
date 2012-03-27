@@ -41,6 +41,10 @@ class GibberishAES {
     protected static $openssl_encrypt_exists;
     protected static $openssl_decrypt_exists;
 
+    // This is a static class, instances are disabled.
+    final private function __construct() {}
+    final private function __clone() {}
+
     /**
      * Crypt AES 256
      *
