@@ -108,7 +108,7 @@ class GibberishAES {
 
     // Non-public methods ------------------------------------------------------
 
-    protected function random_pseudo_bytes($length) {
+    protected static function random_pseudo_bytes($length) {
 
         if (!isset(self::$openssl_random_pseudo_bytes_exists)) {
             self::$openssl_random_pseudo_bytes_exists = function_exists('openssl_random_pseudo_bytes');
@@ -128,7 +128,7 @@ class GibberishAES {
         return $rnd;
     }
 
-    protected function aes_256_cbc_encrypt($string, $key, $iv) {
+    protected static function aes_256_cbc_encrypt($string, $key, $iv) {
 
         if (!isset(self::$openssl_encrypt_exists)) {
             self::$openssl_encrypt_exists = function_exists('openssl_encrypt')
@@ -152,7 +152,7 @@ class GibberishAES {
         return false;
     }
 
-    protected function aes_256_cbc_decrypt($crypted, $key, $iv) {
+    protected static function aes_256_cbc_decrypt($crypted, $key, $iv) {
        
         if (!isset(self::$openssl_decrypt_exists)) {
             self::$openssl_decrypt_exists = function_exists('openssl_decrypt')
@@ -176,14 +176,14 @@ class GibberishAES {
     }
 
     // See http://www.php.net/manual/en/function.mcrypt-decrypt.php#105985
-    protected function pkcs7_pad($string) {
+    protected static function pkcs7_pad($string) {
  
         $blocksize = 16;    // 128 bits: $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $pad = $blocksize - (strlen($string) % $blocksize);
         return $string.str_repeat(chr($pad), $pad);
     }
 
-    protected function remove_pkcs7_pad($string) {
+    protected static function remove_pkcs7_pad($string) {
 
         $blocksize = 16;    // 128 bits: $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $len = strlen($string);
