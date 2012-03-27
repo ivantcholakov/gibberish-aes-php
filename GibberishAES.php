@@ -32,7 +32,7 @@
  * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012.
  *
  * @license Open Software License ("OSL") v 3.0
- * @link http://www.opensource.org/licenses/OSL-3.0 
+ * @link http://www.opensource.org/licenses/OSL-3.0
  */
 
 class GibberishAES {
@@ -54,7 +54,7 @@ class GibberishAES {
      */
     public static function enc($string, $pass) {
 
-        // Set a random salt
+        // Set a random salt.
         $salt = self::random_pseudo_bytes(8);
 
         $salted = '';
@@ -157,7 +157,7 @@ class GibberishAES {
     }
 
     protected static function aes_256_cbc_decrypt($crypted, $key, $iv) {
-       
+
         if (!isset(self::$openssl_decrypt_exists)) {
             self::$openssl_decrypt_exists = function_exists('openssl_decrypt')
                 && version_compare(PHP_VERSION, '5.3.3', '>='); // We need $iv parameter.
@@ -181,7 +181,7 @@ class GibberishAES {
 
     // See http://www.php.net/manual/en/function.mcrypt-decrypt.php#105985
     protected static function pkcs7_pad($string) {
- 
+
         $blocksize = 16;    // 128 bits: $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $pad = $blocksize - (strlen($string) % $blocksize);
         return $string.str_repeat(chr($pad), $pad);
@@ -192,10 +192,10 @@ class GibberishAES {
         $blocksize = 16;    // 128 bits: $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $len = strlen($string);
         $pad = ord($string[$len - 1]);
-        if ($pad > 0 && $pad < $blocksize) {
+        if ($pad > 0 && $pad <= $blocksize) {
             $valid_pad = true;
-            for ($i = 1; $i < $pad; $i++) {
-                if (ord($string[$len - $i - 1]) != $pad) {
+            for ($i = 1; $i <= $pad; $i++) {
+                if (ord($string[$len - $i]) != $pad) {
                     $valid_pad = false;
                     break;
                 }
@@ -208,4 +208,3 @@ class GibberishAES {
     }
 
 }
-
