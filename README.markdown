@@ -9,7 +9,7 @@ This class is based on initial code proposed by nbari at dalmp dot com
 Requirements:
 -----------------------------------
 
-- OpenSSL functions installed and PHP version >= 5.3.3 (preferred case)
+- OpenSSL functions installed and PHP version >= 5.3.3 (the preferred case)
 
 or
 
