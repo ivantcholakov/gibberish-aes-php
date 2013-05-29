@@ -1,4 +1,3 @@
-
 Gibberish AES, a PHP Implementation
 ===================================
 
@@ -10,7 +9,7 @@ This class is based on initial code proposed by nbari at dalmp dot com
 Requirements:
 -----------------------------------
 
-- OpenSSL functions installed and PHP version >= 5.3.3 (preferred case)
+- OpenSSL functions installed and PHP version >= 5.3.3 (the preferred case)
 
 or
 
@@ -19,15 +18,17 @@ or
 Usage:
 -----------------------------------
 
-    // This is a secret key, keep it in a safe place and don't loose it.
-    $key = 'my secret key';
-    // The string to be encrypted.
-    $string = 'my secret message';
-    // This is the result after encryption of the given string.
-    $encrypted_string = GibberishAES::enc($string, $key);
-    // This is the result after decryption of the previously encrypted string.
-    // $decrypted_string == $string (should be).
-    $decrypted_string = GibberishAES::dec($encrypted_string, $key);
+```php
+// This is a secret key, keep it in a safe place and don't loose it.
+$key = 'my secret key';
+// The string to be encrypted.
+$string = 'my secret message';
+// This is the result after encryption of the given string.
+$encrypted_string = GibberishAES::enc($string, $key);
+// This is the result after decryption of the previously encrypted string.
+// $decrypted_string == $string (should be).
+$decrypted_string = GibberishAES::dec($encrypted_string, $key);
+```
 
 Author: Ivan Tcholakov, 2012-2013.
 
