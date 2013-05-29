@@ -29,10 +29,10 @@
  * // $decrypted_string == $string (should be).
  * $decrypted_string = GibberishAES::dec($encrypted_string, $key);
  *
- * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012.
+ * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2013.
  *
- * @license Open Software License ("OSL") v 3.0
- * @link http://www.opensource.org/licenses/OSL-3.0
+ * @license The MIT License (MIT)
+ * @link http://opensource.org/licenses/MIT
  */
 
 class GibberishAES {

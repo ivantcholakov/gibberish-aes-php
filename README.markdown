@@ -29,6 +29,6 @@ Usage:
     // $decrypted_string == $string (should be).
     $decrypted_string = GibberishAES::dec($encrypted_string, $key);
 
-Author: Ivan Tcholakov, 2012.
+Author: Ivan Tcholakov, 2012-2013.
 
-License: Open Software License ("OSL") v 3.0, [http://www.opensource.org/licenses/OSL-3.0](http://www.opensource.org/licenses/OSL-3.0)
+License: The MIT License (MIT), [http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT)
