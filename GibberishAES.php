@@ -3,10 +3,17 @@
 /**
  * Gibberish AES, a PHP Implementation
  *
- * See Gibberish AES javascript encryption library, @link https://github.com/mdp/gibberish-aes
+ * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2013.
+ * @link https://github.com/ivantcholakov/gibberish-aes-php
  *
- * It is based on initial code proposed by nbari at dalmp dot com
+ * @license The MIT License (MIT)
+ * @link http://opensource.org/licenses/MIT
+ *
+ * This class is based on initial code proposed by nbari at dalmp dot com
  * @link http://www.php.net/manual/en/function.openssl-decrypt.php#107210
+ *
+ * See also Gibberish AES javascript encryption library
+ * @link https://github.com/mdp/gibberish-aes
  *
  * Requirements:
  *
@@ -29,10 +36,6 @@
  * // $decrypted_string == $string (should be).
  * $decrypted_string = GibberishAES::dec($encrypted_string, $key);
  *
- * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2013.
- *
- * @license The MIT License (MIT)
- * @link http://opensource.org/licenses/MIT
  */
 
 class GibberishAES {
