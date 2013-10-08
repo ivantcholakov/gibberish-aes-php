@@ -147,6 +147,7 @@ class GibberishAES {
         }
 
         // Info: http://www.chilkatsoft.com/p/php_aes.asp
+        // http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
         $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
 
         if (mcrypt_generic_init($cipher, $key, $iv) != -1) {
