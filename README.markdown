@@ -6,6 +6,11 @@ See Gibberish AES javascript encryption library, [https://github.com/mdp/gibberi
 This class is based on initial code proposed by nbari at dalmp dot com
 [http://www.php.net/manual/en/function.openssl-decrypt.php#107210](http://www.php.net/manual/en/function.openssl-decrypt.php#107210)
 
+Live Demo
+---------
+
+http://iridadesign.com/starter-public-edition-4/www/playground/gibberish-aes
+
 Requirements:
 -----------------------------------
 
