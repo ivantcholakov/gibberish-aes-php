@@ -18,7 +18,10 @@ Requirements:
 
 or
 
-- Mcrypt functions installed. 
+- Mcrypt functions installed.
+
+If none of these functions exist, the class will try to use openssl
+from the command line (avoid this case).
 
 Usage Example:
 -----------------------------------
