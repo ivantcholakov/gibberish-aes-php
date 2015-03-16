@@ -199,6 +199,69 @@ class GibberishAES {
 
     // Non-public methods ------------------------------------------------------
 
+    protected static function openssl_random_pseudo_bytes_exists() {
+
+        if (!isset(self::$openssl_random_pseudo_bytes_exists)) {
+
+            self::$openssl_random_pseudo_bytes_exists = function_exists('openssl_random_pseudo_bytes') &&
+                (version_compare(PHP_VERSION, '5.3.4') >= 0 || !self::is_windows());
+        }
+
+        return self::$openssl_random_pseudo_bytes_exists;
+    }
+
+    protected static function mcrypt_dev_urandom_exists() {
+
+        if (!isset(self::$mcrypt_dev_urandom_exists)) {
+
+            self::$mcrypt_dev_urandom_exists = function_exists('mcrypt_create_iv') &&
+                (version_compare(PHP_VERSION, '5.3.7') >= 0 || !self::is_windows());
+        }
+
+        return self::$mcrypt_dev_urandom_exists;
+    }
+
+    protected static function openssl_encrypt_exists() {
+
+        if (!isset(self::$openssl_encrypt_exists)) {
+            self::$openssl_encrypt_exists = function_exists('openssl_encrypt')
+                && version_compare(PHP_VERSION, '5.3.3', '>='); // We need $iv parameter.
+        }
+
+        return self::$openssl_encrypt_exists;
+    }
+
+    protected static function openssl_decrypt_exists() {
+
+        if (!isset(self::$openssl_decrypt_exists)) {
+            self::$openssl_decrypt_exists = function_exists('openssl_decrypt')
+                && version_compare(PHP_VERSION, '5.3.3', '>='); // We need $iv parameter.
+        }
+
+        return self::$openssl_decrypt_exists;
+    }
+
+    protected static function mcrypt_exists() {
+
+        if (!isset(self::$mcrypt_exists)) {
+            self::$mcrypt_exists = function_exists('mcrypt_encrypt');
+        }
+
+        return self::$mcrypt_exists;
+    }
+
+
+    protected static function openssl_cli_exists() {
+
+        if (!isset(self::$openssl_cli_exists)) {
+
+            exec('openssl version', $output, $return);
+            self::$openssl_cli_exists = $return == 0;
+        }
+
+        return self::$openssl_cli_exists;
+    }
+
     protected static function is_windows() {
 
         // Beware about 'Darwin'.
@@ -234,23 +297,11 @@ class GibberishAES {
 
     protected static function random_pseudo_bytes($length) {
 
-        if (!isset(self::$openssl_random_pseudo_bytes_exists)) {
-
-            self::$openssl_random_pseudo_bytes_exists = function_exists('openssl_random_pseudo_bytes') &&
-                (version_compare(PHP_VERSION, '5.3.4') >= 0 || !self::is_windows());
-        }
-
-        if (self::$openssl_random_pseudo_bytes_exists) {
+        if (self::openssl_random_pseudo_bytes_exists()) {
             return openssl_random_pseudo_bytes($length);
         }
 
-        if (!isset(self::$mcrypt_dev_urandom_exists)) {
-
-            self::$mcrypt_dev_urandom_exists = function_exists('mcrypt_create_iv') &&
-                (version_compare(PHP_VERSION, '5.3.7') >= 0 || !self::is_windows());
-        }
-
-        if (self::$mcrypt_dev_urandom_exists) {
+        if (self::mcrypt_dev_urandom_exists()) {
 
             $rnd = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
 
@@ -277,20 +328,11 @@ class GibberishAES {
 
         $key_size = self::$key_size;
 
-        if (!isset(self::$openssl_encrypt_exists)) {
-            self::$openssl_encrypt_exists = function_exists('openssl_encrypt')
-                && version_compare(PHP_VERSION, '5.3.3', '>='); // We need $iv parameter.
-        }
-
-        if (self::$openssl_encrypt_exists) {
+        if (self::openssl_encrypt_exists()) {
             return openssl_encrypt($string, "aes-$key_size-cbc", $key, true, $iv);
         }
 
-        if (!isset(self::$mcrypt_exists)) {
-            self::$mcrypt_exists = function_exists('mcrypt_encrypt');
-        }
-
-        if (self::$mcrypt_exists) {
+        if (self::mcrypt_exists()) {
 
             // Info: http://www.chilkatsoft.com/p/php_aes.asp
             // http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
@@ -309,11 +351,7 @@ class GibberishAES {
             return false;
         }
 
-        if (!isset(self::$openssl_cli_exists)) {
-            self::$openssl_cli_exists = self::openssl_cli_exists();
-        }
-
-        if (self::$openssl_cli_exists) {
+        if (self::openssl_cli_exists()) {
 
             $cmd = 'echo '.self::escapeshellarg($string).' | openssl enc -e -a -A -aes-'.$key_size.'-cbc -K '.self::strtohex($key).' -iv '.self::strtohex($iv);
 
@@ -338,20 +376,11 @@ class GibberishAES {
 
         $key_size = self::$key_size;
 
-        if (!isset(self::$openssl_decrypt_exists)) {
-            self::$openssl_decrypt_exists = function_exists('openssl_decrypt')
-                && version_compare(PHP_VERSION, '5.3.3', '>='); // We need $iv parameter.
-        }
-
-        if (self::$openssl_decrypt_exists) {
+        if (self::openssl_decrypt_exists()) {
             return openssl_decrypt($crypted, "aes-$key_size-cbc", $key, true, $iv);
         }
 
-        if (!isset(self::$mcrypt_exists)) {
-            self::$mcrypt_exists = function_exists('mcrypt_encrypt');
-        }
-
-        if (self::$mcrypt_exists) {
+        if (self::mcrypt_exists()) {
 
             $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
 
@@ -367,11 +396,7 @@ class GibberishAES {
             return false;
         }
 
-        if (!isset(self::$openssl_cli_exists)) {
-            self::$openssl_cli_exists = self::openssl_cli_exists();
-        }
-
-        if (self::$openssl_cli_exists) {
+        if (self::openssl_cli_exists()) {
 
             $string = base64_encode($crypted);
 
@@ -428,13 +453,6 @@ class GibberishAES {
         }
 
         return $string;
-    }
-
-    protected static function openssl_cli_exists() {
-
-        exec('openssl version', $output, $return);
-
-        return $return == 0;
     }
 
     protected static function strtohex($string) {
