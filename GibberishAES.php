@@ -63,6 +63,7 @@ class GibberishAES {
     protected static $openssl_decrypt_exists = null;
     protected static $mcrypt_exists = null;
     protected static $openssl_cli_exists = null;
+    protected static $mbstring_func_overload = null;
 
     // This is a static class, instances are disabled.
     final private function __construct() {}
@@ -91,14 +92,14 @@ class GibberishAES {
         // $salted_length = $key_length (32, 24, 16) + $block_length (16) = (48, 40, 32)
         $salted_length = $key_length + $block_length;
 
-        while (strlen($salted) < $salted_length) {
+        while (self::strlen($salted) < $salted_length) {
 
             $dx = md5($dx.$pass.$salt, true);
             $salted .= $dx;
         }
 
-        $key = substr($salted, 0, $key_length);
-        $iv = substr($salted, $key_length, $block_length);
+        $key = self::substr($salted, 0, $key_length);
+        $iv = self::substr($salted, $key_length, $block_length);
 
         $encrypted = self::aes_cbc_encrypt($string, $key, $iv);
 
@@ -121,8 +122,8 @@ class GibberishAES {
         $block_length = 16;
 
         $data = base64_decode($string);
-        $salt = substr($data, 8, 8);
-        $encrypted = substr($data, 16);
+        $salt = self::substr($data, 8, 8);
+        $encrypted = self::substr($data, 16);
 
         /**
          * From https://github.com/mdp/gibberish-aes
@@ -150,8 +151,8 @@ class GibberishAES {
             $result .= $md5_hash[$i];
         }
 
-        $key = substr($result, 0, $key_length);
-        $iv = substr($result, $key_length, $block_length);
+        $key = self::substr($result, 0, $key_length);
+        $iv = self::substr($result, $key_length, $block_length);
 
         return self::aes_cbc_decrypt($encrypted, $key, $iv);
     }
@@ -202,6 +203,33 @@ class GibberishAES {
 
         // Beware about 'Darwin'.
         return 0 === stripos(PHP_OS, 'win');
+    }
+
+    protected static function mbstring_func_overload() {
+
+        if (!isset(self::$mbstring_func_overload)) {
+            self::$mbstring_func_overload = extension_loaded('mbstring') && ini_get('mbstring.func_overload');
+        }
+
+        return self::$mbstring_func_overload;
+    }
+
+    protected static function strlen($str) {
+
+        return self::mbstring_func_overload() ? mb_strlen($str, '8bit') : strlen($str);
+    }
+
+    protected static function substr($str, $start, $length = null) {
+
+        if (self::mbstring_func_overload()) {
+
+            // mb_substr($str, $start, null, '8bit') returns an empty string on PHP 5.3
+            isset($length) OR $length = ($start >= 0 ? self::strlen($str) - $start : -$start);
+
+            return mb_substr($str, $start, $length, '8bit');
+        }
+
+        return isset($length) ? substr($str, $start, $length) : substr($str, $start);
     }
 
     protected static function random_pseudo_bytes($length) {
@@ -371,7 +399,7 @@ class GibberishAES {
     protected static function pkcs7_pad($string) {
 
         $block_length = 16;    // 128 bits: $block_length = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-        $pad = $block_length - (strlen($string) % $block_length);
+        $pad = $block_length - (self::strlen($string) % $block_length);
 
         return $string.str_repeat(chr($pad), $pad);
     }
@@ -379,7 +407,7 @@ class GibberishAES {
     protected static function remove_pkcs7_pad($string) {
 
         $block_length = 16;    // 128 bits: $block_length = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-        $len = strlen($string);
+        $len = self::strlen($string);
         $pad = ord($string[$len - 1]);
 
         if ($pad > 0 && $pad <= $block_length) {
@@ -395,7 +423,7 @@ class GibberishAES {
             }
 
             if ($valid_pad) {
-                $string = substr($string, 0, $len - $pad);
+                $string = self::substr($string, 0, $len - $pad);
             }
         }
 
