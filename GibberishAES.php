@@ -19,18 +19,18 @@
  *
  * Usage:
  *
- * // This is a secret key, keep it in a safe place and don't loose it.
- * $key = 'my secret key';
+ * // This is a secret pass-phrase, keep it in a safe place and don't loose it.
+ * $pass = 'my secret pass-phrase, it should be long';
  *
  * // The string to be encrypted.
  * $string = 'my secret message';
  *
  * // This is the result after encryption of the given string.
- * $encrypted_string = GibberishAES::enc($string, $key);
+ * $encrypted_string = GibberishAES::enc($string, $pass);
  *
  * // This is the result after decryption of the previously encrypted string.
  * // $decrypted_string == $string (should be).
- * $decrypted_string = GibberishAES::dec($encrypted_string, $key);
+ * $decrypted_string = GibberishAES::dec($encrypted_string, $pass);
  * echo $decrypted_string;
  *
  * // The default key-size is 256 bits. 128 and 192 bits are also allowed.
@@ -38,8 +38,8 @@
  * $old_key_size = GibberishAES::size();
  * GibberishAES::size(192);
  * // The short way: $old_key_size = GibberishAES::size(192);
- * $encrypted_string = GibberishAES::enc($string, $key);
- * $decrypted_string = GibberishAES::dec($encrypted_string, $key);
+ * $encrypted_string = GibberishAES::enc($string, $pass);
+ * $decrypted_string = GibberishAES::dec($encrypted_string, $pass);
  * GibberishAES::size($old_key_size);
  * echo $decrypted_string;
  *
@@ -77,7 +77,10 @@ class GibberishAES {
      * Crypt AES (256, 192, 128)
      *
      * @param   string  $string     The input message to be encrypted.
-     * @param   string  $pass       The key (string representation).
+     * @param   string  $pass       The secret pass-phrase, choose a long string
+     *                              (64 characters for example) for keeping high entropy.
+     *                              The pass-phrase is converted internaly into
+     *                              a binary key that is to be used for encryption.
      * @return  mixed               base64 encrypted string, FALSE on failure.
      */
     public static function enc($string, $pass) {
@@ -114,7 +117,7 @@ class GibberishAES {
      * Decrypt AES (256, 192, 128)
      *
      * @param   string  $string     The input message to be decrypted.
-     * @param   string  $pass       The key (string representation).
+     * @param   string  $pass       The secret pass-phrase that has been used for encryption.
      * @return  mixed               base64 decrypted string, FALSE on failure.
      */
     public static function dec($string, $pass) {
