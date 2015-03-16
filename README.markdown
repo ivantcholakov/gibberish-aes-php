@@ -81,3 +81,5 @@ GibberishAES::size($old_key_size);
 
 Author: Ivan Tcholakov, 2012-2015.  
 License: The MIT License (MIT), [http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT)
+
+A fragment of code is under the New BSD License, George Argyros, 2012.
