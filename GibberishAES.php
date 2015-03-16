@@ -225,7 +225,8 @@ class GibberishAES {
 
         if (!isset(self::$openssl_encrypt_exists)) {
             self::$openssl_encrypt_exists = function_exists('openssl_encrypt')
-                && version_compare(PHP_VERSION, '5.3.3', '>='); // We need $iv parameter.
+                // We need the $iv parameter.
+                && version_compare(PHP_VERSION, '5.3.3', '>=');
         }
 
         return self::$openssl_encrypt_exists;
@@ -235,7 +236,8 @@ class GibberishAES {
 
         if (!isset(self::$openssl_decrypt_exists)) {
             self::$openssl_decrypt_exists = function_exists('openssl_decrypt')
-                && version_compare(PHP_VERSION, '5.3.3', '>='); // We need $iv parameter.
+                // We need the $iv parameter.
+                && version_compare(PHP_VERSION, '5.3.3', '>=');
         }
 
         return self::$openssl_decrypt_exists;
@@ -249,7 +251,6 @@ class GibberishAES {
 
         return self::$mcrypt_exists;
     }
-
 
     protected static function openssl_cli_exists() {
 
@@ -423,7 +424,8 @@ class GibberishAES {
 
     protected static function pkcs7_pad($string) {
 
-        $block_length = 16;    // 128 bits: $block_length = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        // 128 bits: $block_length = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $block_length = 16;
         $pad = $block_length - (self::strlen($string) % $block_length);
 
         return $string.str_repeat(chr($pad), $pad);
@@ -431,7 +433,8 @@ class GibberishAES {
 
     protected static function remove_pkcs7_pad($string) {
 
-        $block_length = 16;    // 128 bits: $block_length = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        // 128 bits: $block_length = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $block_length = 16;
         $len = self::strlen($string);
         $pad = ord($string[$len - 1]);
 
