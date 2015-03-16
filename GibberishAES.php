@@ -54,20 +54,24 @@
 
 class GibberishAES {
 
-    protected static $key_size = 256;            // The default key size in bits
-    protected static $valid_key_sizes = array(128, 192, 256);   // Sizes in bits
+    // The default key size in bits.
+    protected static $key_size = 256;
+
+    // The allowed key sizes in bits.
+    protected static $valid_key_sizes = array(128, 192, 256);
 
     protected static $openssl_random_pseudo_bytes_exists = null;
     protected static $mcrypt_dev_urandom_exists = null;
     protected static $openssl_encrypt_exists = null;
     protected static $openssl_decrypt_exists = null;
     protected static $mcrypt_exists = null;
-    protected static $openssl_cli_exists = null;
     protected static $mbstring_func_overload = null;
 
+    protected static $openssl_cli_exists = null;
+
     // This is a static class, instances are disabled.
-    final private function __construct() {}
-    final private function __clone() {}
+    final private function __construct() { }
+    final private function __clone() { }
 
     /**
      * Crypt AES (256, 192, 128)
@@ -183,14 +187,8 @@ class GibberishAES {
         $newsize = (int) $newsize;
 
         if (!$valid_integer || !in_array($newsize, self::$valid_key_sizes)) {
-
-            trigger_error(
-                'GibberishAES: Invalid key size value was to be set. It should be integer value (number of bits) amongst: 128, 192, 256.',
-                E_USER_WARNING
-            );
-
+            trigger_error('GibberishAES: Invalid key size value was to be set. It should be an integer value (number of bits) amongst: '.implode(', ', self::$valid_key_sizes).'.', E_USER_WARNING);
         } else {
-
             self::$key_size = $newsize;
         }
 
@@ -365,10 +363,7 @@ class GibberishAES {
             return false;
         }
 
-        trigger_error(
-            'GibberishAES: System requirements failure, please, check them.',
-            E_USER_WARNING
-        );
+        trigger_error('GibberishAES: System requirements failure, please, check them.', E_USER_WARNING);
 
         return false;
     }
@@ -412,10 +407,7 @@ class GibberishAES {
             return false;
         }
 
-        trigger_error(
-            'GibberishAES: System requirements failure, please, check them.',
-            E_USER_WARNING
-        );
+        trigger_error('GibberishAES: System requirements failure, please, check them.', E_USER_WARNING);
 
         return false;
     }
@@ -460,13 +452,13 @@ class GibberishAES {
 
     protected static function strtohex($string) {
 
-         $result = '';
+        $result = '';
 
-         foreach (str_split($string) as $c) {
-             $result .= sprintf("%02X", ord($c));
-         }
+        foreach (str_split($string) as $c) {
+            $result .= sprintf("%02X", ord($c));
+        }
 
-         return $result;
+        return $result;
     }
 
     protected static function escapeshellarg($arg) {
