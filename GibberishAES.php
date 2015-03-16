@@ -14,9 +14,6 @@
  * or
  * Mcrypt functions installed.
  *
- * If none of these functions exist, the class will try to use openssl
- * from the command line (avoid this case).
- *
  * Usage:
  *
  * // This is a secret pass-phrase, keep it in a safe place and don't loose it.
