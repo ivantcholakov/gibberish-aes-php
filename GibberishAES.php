@@ -198,12 +198,18 @@ class GibberishAES {
 
     // Non-public methods ------------------------------------------------------
 
+    protected static function is_windows() {
+
+        // Beware about 'Darwin'.
+        return 0 === stripos(PHP_OS, 'win');
+    }
+
     protected static function random_pseudo_bytes($length) {
 
         if (!isset(self::$openssl_random_pseudo_bytes_exists)) {
 
             self::$openssl_random_pseudo_bytes_exists = function_exists('openssl_random_pseudo_bytes') &&
-                (version_compare(PHP_VERSION, '5.3.4') >= 0 || substr(PHP_OS, 0, 3) !== 'WIN');
+                (version_compare(PHP_VERSION, '5.3.4') >= 0 || !self::is_windows());
         }
 
         if (self::$openssl_random_pseudo_bytes_exists) {
@@ -213,7 +219,7 @@ class GibberishAES {
         if (!isset(self::$mcrypt_dev_urandom_exists)) {
 
             self::$mcrypt_dev_urandom_exists = function_exists('mcrypt_create_iv') &&
-                (version_compare(PHP_VERSION, '5.3.7') >= 0 || substr(PHP_OS, 0, 3) !== 'WIN');
+                (version_compare(PHP_VERSION, '5.3.7') >= 0 || !self::is_windows());
         }
 
         if (self::$mcrypt_dev_urandom_exists) {
@@ -416,7 +422,7 @@ class GibberishAES {
 
     protected static function escapeshellarg($arg) {
 
-        if (strtolower(substr(php_uname('s'), 0, 3 )) == 'win') {
+        if (self::is_windows()) {
 
             // See http://stackoverflow.com/questions/6427732/how-can-i-escape-an-arbitrary-string-for-use-as-a-command-line-argument-in-windo
 
