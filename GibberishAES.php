@@ -67,7 +67,15 @@ class GibberishAES {
     protected static $mcrypt_exists = null;
     protected static $mbstring_func_overload = null;
 
-    protected static $openssl_cli_exists = null;
+    // Modified by Ivan Tcholakov, 16-MAR-2015.
+    //protected static $openssl_cli_exists = null;
+    protected static $openssl_cli_exists = false;
+    // Explanation: Passing encryption/decryption to an external process is not a good idea.
+    // This feature is relevant to old servers (a cutting-edge case), so I am disabling
+    // it by default. You may at your own risk to enable it here (uncomment the previous
+    // value and comment the current one), but it would be better your PHP engine to have
+    // OpenSSL or Mcrypt functions installed.
+    // I am going in a future release to remove this feature permanently.
 
     // This is a static class, instances are disabled.
     final private function __construct() {}
