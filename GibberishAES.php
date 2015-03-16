@@ -43,7 +43,7 @@
  * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2015.
  * Code repository: @link https://github.com/ivantcholakov/gibberish-aes-php
  *
- * @version 1.1.1
+ * @version 1.2.0
  *
  * @license The MIT License (MIT)
  * @link http://opensource.org/licenses/MIT
