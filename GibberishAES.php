@@ -305,7 +305,12 @@ class GibberishAES {
     protected static function random_bytes($length) {
 
         if (self::openssl_random_pseudo_bytes_exists()) {
-            return openssl_random_pseudo_bytes($length);
+
+            $rnd = openssl_random_pseudo_bytes($length, $crypto_strong);
+
+            if ($crypto_strong) {
+                return $rnd;
+            }
         }
 
         if (self::mcrypt_dev_urandom_exists()) {
