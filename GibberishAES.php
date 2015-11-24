@@ -323,7 +323,7 @@ class GibberishAES {
         /*
          * The following code fragment has been taken from Secure-random-bytes-in-PHP
          * project, released under the New BSD License.
-         * @see https://github.com/ivantcholakov/Secure-random-bytes-in-PHP
+         * @see https://github.com/GeorgeArgyros/Secure-random-bytes-in-PHP
          *
          *
          *
