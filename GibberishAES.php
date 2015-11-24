@@ -57,6 +57,7 @@ class GibberishAES {
     // The allowed key sizes in bits.
     protected static $valid_key_sizes = array(128, 192, 256);
 
+    protected static $php7_random_bytes_exists = null;
     protected static $openssl_random_pseudo_bytes_exists = null;
     protected static $mcrypt_dev_urandom_exists = null;
     protected static $openssl_encrypt_exists = null;
@@ -205,6 +206,15 @@ class GibberishAES {
 
     // Non-public methods ------------------------------------------------------
 
+    protected static function php7_random_bytes_exists() {
+
+        if (!isset(self::$php7_random_bytes_exists)) {
+            self::$php7_random_bytes_exists = version_compare(PHP_VERSION, '7.0.0', '>=') && function_exists('random_bytes');
+        }
+
+        return self::$php7_random_bytes_exists;
+    }
+
     protected static function openssl_random_pseudo_bytes_exists() {
 
         if (!isset(self::$openssl_random_pseudo_bytes_exists)) {
@@ -303,6 +313,19 @@ class GibberishAES {
     }
 
     protected static function random_bytes($length) {
+
+        $length = (int) $length;
+
+        if (self::php7_random_bytes_exists()) {
+
+            try
+            {
+                return random_bytes($length);
+            }
+            catch (Exception $e) {
+                // Do nothing, continue.
+            }
+        }
 
         if (self::openssl_random_pseudo_bytes_exists()) {
 
