@@ -5,6 +5,10 @@
  *
  * See Gibberish AES javascript encryption library, @link https://github.com/mdp/gibberish-aes
  *
+ * An important note: The complementary JavaScript project Gibberish AES has been
+ * deprecated, see https://github.com/mdp/gibberish-aes/issues/25
+ * Consider finding alternative PHP and JavaScript solutions.
+ *
  * This implementation is based on initial code proposed by nbari at dalmp dot com
  * @link http://www.php.net/manual/en/function.openssl-decrypt.php#107210
  *

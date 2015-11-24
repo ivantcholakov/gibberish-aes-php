@@ -3,6 +3,10 @@ Gibberish AES, a PHP Implementation
 
 See Gibberish AES javascript encryption library, [https://github.com/mdp/gibberish-aes](https://github.com/mdp/gibberish-aes)
 
+An important note: The complementary JavaScript project Gibberish AES has been
+deprecated, see https://github.com/mdp/gibberish-aes/issues/25  
+Consider finding alternative PHP and JavaScript solutions.
+
 This class is based on initial code proposed by nbari at dalmp dot com
 [http://www.php.net/manual/en/function.openssl-decrypt.php#107210](http://www.php.net/manual/en/function.openssl-decrypt.php#107210)
 
