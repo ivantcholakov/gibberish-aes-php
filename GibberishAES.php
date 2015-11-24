@@ -93,7 +93,7 @@ class GibberishAES {
         $key_size = self::$key_size;
 
         // Set a random salt.
-        $salt = self::random_pseudo_bytes(8);
+        $salt = self::random_bytes(8);
 
         $salted = '';
         $dx = '';
@@ -302,7 +302,7 @@ class GibberishAES {
         return isset($length) ? substr($str, $start, $length) : substr($str, $start);
     }
 
-    protected static function random_pseudo_bytes($length) {
+    protected static function random_bytes($length) {
 
         if (self::openssl_random_pseudo_bytes_exists()) {
             return openssl_random_pseudo_bytes($length);
