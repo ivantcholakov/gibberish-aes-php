@@ -18,11 +18,15 @@ http://iridadesign.com/starter-public-edition-4/www/playground/gibberish-aes
 Requirements:
 -----------------------------------
 
-- OpenSSL functions installed and PHP version >= 5.3.3 (the preferred case)
+- OpenSSL functions installed and PHP version >= 5.3.3
 
 or
 
 - Mcrypt functions installed.
+
+For PHP under version 7 it is recommendable you to install within your project
+"PHP 5.x support for random_bytes() and random_int()",
+https://github.com/paragonie/random_compat
 
 Usage Example:
 -----------------------------------

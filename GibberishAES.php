@@ -14,9 +14,13 @@
  *
  * Requirements:
  *
- * OpenSSL functions installed and PHP version >= 5.3.3 (preferred case)
+ * OpenSSL functions installed and PHP version >= 5.3.3
  * or
  * Mcrypt functions installed.
+ *
+ * For PHP under version 7 it is recommendable you to install within your project
+ * "PHP 5.x support for random_bytes() and random_int()",
+ * @link https://github.com/paragonie/random_compat
  *
  * Usage:
  *
@@ -61,9 +65,7 @@ class GibberishAES {
     // The allowed key sizes in bits.
     protected static $valid_key_sizes = array(128, 192, 256);
 
-    protected static $php7_random_bytes_exists = null;
-    protected static $openssl_random_pseudo_bytes_exists = null;
-    protected static $mcrypt_dev_urandom_exists = null;
+    protected static $random_bytes_exists = null;
     protected static $openssl_encrypt_exists = null;
     protected static $openssl_decrypt_exists = null;
     protected static $mcrypt_exists = null;
@@ -200,35 +202,26 @@ class GibberishAES {
 
     // Non-public methods ------------------------------------------------------
 
-    protected static function php7_random_bytes_exists() {
+    protected static function random_bytes_exists() {
 
-        if (!isset(self::$php7_random_bytes_exists)) {
-            self::$php7_random_bytes_exists = version_compare(PHP_VERSION, '7.0.0', '>=') && function_exists('random_bytes');
+        if (!isset(self::$random_bytes_exists)) {
+
+            self::$random_bytes_exists = false;
+
+            if (function_exists('random_bytes')) {
+
+                try
+                {
+                    $test = random_bytes(1);
+                    self::$random_bytes_exists = true;
+                }
+                catch (Exception $e) {
+                    // Do nothing.
+                }
+            }
         }
 
-        return self::$php7_random_bytes_exists;
-    }
-
-    protected static function openssl_random_pseudo_bytes_exists() {
-
-        if (!isset(self::$openssl_random_pseudo_bytes_exists)) {
-
-            self::$openssl_random_pseudo_bytes_exists = function_exists('openssl_random_pseudo_bytes') &&
-                (version_compare(PHP_VERSION, '5.3.4') >= 0 || !self::is_windows());
-        }
-
-        return self::$openssl_random_pseudo_bytes_exists;
-    }
-
-    protected static function mcrypt_dev_urandom_exists() {
-
-        if (!isset(self::$mcrypt_dev_urandom_exists)) {
-
-            self::$mcrypt_dev_urandom_exists = function_exists('mcrypt_create_iv') &&
-                (version_compare(PHP_VERSION, '5.3.7') >= 0 || !self::is_windows());
-        }
-
-        return self::$mcrypt_dev_urandom_exists;
+        return self::$random_bytes_exists;
     }
 
     protected static function openssl_encrypt_exists() {
@@ -299,7 +292,7 @@ class GibberishAES {
 
         $length = (int) $length;
 
-        if (self::php7_random_bytes_exists()) {
+        if (self::random_bytes_exists()) {
 
             try
             {
@@ -307,24 +300,6 @@ class GibberishAES {
             }
             catch (Exception $e) {
                 // Do nothing, continue.
-            }
-        }
-
-        if (self::openssl_random_pseudo_bytes_exists()) {
-
-            $rnd = openssl_random_pseudo_bytes($length, $crypto_strong);
-
-            if ($crypto_strong) {
-                return $rnd;
-            }
-        }
-
-        if (self::mcrypt_dev_urandom_exists()) {
-
-            $rnd = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-
-            if ($rnd !== false) {
-                return $rnd;
             }
         }
 
