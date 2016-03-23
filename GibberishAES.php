@@ -44,7 +44,7 @@
  * GibberishAES::size($old_key_size);
  * echo $decrypted_string;
  *
- * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2015.
+ * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2016.
  * Code repository: @link https://github.com/ivantcholakov/gibberish-aes-php
  *
  * @version 1.3.0-dev
@@ -68,16 +68,6 @@ class GibberishAES {
     protected static $openssl_decrypt_exists = null;
     protected static $mcrypt_exists = null;
     protected static $mbstring_func_overload = null;
-
-    // Modified by Ivan Tcholakov, 16-MAR-2015.
-    //protected static $openssl_cli_exists = null;
-    protected static $openssl_cli_exists = false;
-    // Explanation: Passing encryption/decryption to an external process is not a good idea.
-    // This feature is relevant to old servers (a cutting-edge case), so I am disabling
-    // it by default. You may at your own risk to enable it here (uncomment the previous
-    // value and comment the current one), but it would be better your PHP engine to have
-    // OpenSSL or Mcrypt functions installed.
-    // I am going in a future release to remove this feature permanently.
 
     // This is a static class, instances are disabled.
     final private function __construct() {}
@@ -270,17 +260,6 @@ class GibberishAES {
         }
 
         return self::$mcrypt_exists;
-    }
-
-    protected static function openssl_cli_exists() {
-
-        if (!isset(self::$openssl_cli_exists)) {
-
-            exec('openssl version', $output, $return);
-            self::$openssl_cli_exists = $return == 0;
-        }
-
-        return self::$openssl_cli_exists;
     }
 
     protected static function is_windows() {
@@ -505,19 +484,6 @@ class GibberishAES {
             return false;
         }
 
-        if (self::openssl_cli_exists()) {
-
-            $cmd = 'echo '.self::escapeshellarg($string).' | openssl enc -e -a -A -aes-'.$key_size.'-cbc -K '.self::strtohex($key).' -iv '.self::strtohex($iv);
-
-            exec($cmd, $output, $return);
-
-            if ($return == 0 && isset($output[0])) {
-                return base64_decode($output[0]);
-            }
-
-            return false;
-        }
-
         trigger_error('GibberishAES: System requirements failure, please, check them.', E_USER_WARNING);
 
         return false;
@@ -542,21 +508,6 @@ class GibberishAES {
                 mcrypt_module_close($cipher);
 
                 return self::remove_pkcs7_pad($decrypted);
-            }
-
-            return false;
-        }
-
-        if (self::openssl_cli_exists()) {
-
-            $string = base64_encode($crypted);
-
-            $cmd = 'echo '.self::escapeshellarg($string).' | openssl enc -d -a -A -aes-'.$key_size.'-cbc -K '.self::strtohex($key).' -iv '.self::strtohex($iv);
-
-            exec($cmd, $output, $return);
-
-            if ($return == 0 && isset($output[0])) {
-                return $output[0];
             }
 
             return false;
@@ -603,47 +554,6 @@ class GibberishAES {
         }
 
         return $string;
-    }
-
-    protected static function strtohex($string) {
-
-        $result = '';
-
-        foreach (str_split($string) as $c) {
-            $result .= sprintf("%02X", ord($c));
-        }
-
-        return $result;
-    }
-
-    protected static function escapeshellarg($arg) {
-
-        if (self::is_windows()) {
-
-            // See http://stackoverflow.com/questions/6427732/how-can-i-escape-an-arbitrary-string-for-use-as-a-command-line-argument-in-windo
-
-            // Sequence of backslashes followed by a double quote:
-            // double up all the backslashes and escape the double quote
-            $arg = preg_replace('/(\\*)"/g', '$1$1\\"', $arg);
-
-            // Sequence of backslashes followed by the end of the arg,
-            // which will become a double quote later:
-            // double up all the backslashes
-            $arg = preg_replace('/(\\*)$/', '$1$1', $arg);
-
-            // All other backslashes do not need modifying
-
-            // Double-quote the whole thing
-            $arg = '"'.$arg.'"';
-
-            // Escape shell metacharacters.
-            $arg = preg_replace('/([\(\)%!^"<>&|;, ])/g', '^$1', $arg);
-
-            return $arg;
-        }
-
-        // See http://markushedlund.com/dev-tech/php-escapeshellarg-with-unicodeutf-8-support
-        return "'" . str_replace("'", "'\\''", $arg) . "'";
     }
 
 }
