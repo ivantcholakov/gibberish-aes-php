@@ -22,7 +22,7 @@ Requirements:
 
 or
 
-- Mcrypt functions installed.
+- Mcrypt functions installed and PHP version < 7.1.0-alpha
 
 For PHP under version 7 it is recommendable you to install within your project
 "PHP 5.x support for random_bytes() and random_int()",
