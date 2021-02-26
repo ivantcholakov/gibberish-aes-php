@@ -48,10 +48,10 @@
  * GibberishAES::size($old_key_size);
  * echo $decrypted_string;
  *
- * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2020.
+ * @author Ivan Tcholakov <ivantcholakov@gmail.com>, 2012-2021.
  * Code repository: @link https://github.com/ivantcholakov/gibberish-aes-php
  *
- * @version 1.3.2
+ * @version 1.3.3
  *
  * @license The MIT License (MIT)
  * @link http://opensource.org/licenses/MIT
