@@ -266,7 +266,7 @@ class GibberishAES {
     protected static function mbstring_func_overload() {
 
         if (!isset(self::$mbstring_func_overload)) {
-            self::$mbstring_func_overload = extension_loaded('mbstring') && ini_get('mbstring.func_overload');
+            self::$mbstring_func_overload = (defined('MB_OVERLOAD_STRING') && ((int) @ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING));
         }
 
         return self::$mbstring_func_overload;
